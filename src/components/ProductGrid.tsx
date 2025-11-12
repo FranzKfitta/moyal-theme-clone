@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import product1 from "@/assets/product-1.jpg";
 import product2 from "@/assets/product-2.jpg";
@@ -42,8 +43,9 @@ const ProductGrid = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <div
+            <Link
               key={product.id}
+              to={`/product/${product.id}`}
               className="group cursor-pointer"
             >
               <div className="relative overflow-hidden bg-secondary rounded-sm mb-4 aspect-[3/4] shadow-subtle hover:shadow-elegant transition-all duration-300">
@@ -68,18 +70,20 @@ const ProductGrid = () => {
                 <h3 className="font-serif text-lg font-medium">{product.name}</h3>
                 <p className="text-muted-foreground font-medium">{product.price}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="px-8 py-6 text-base font-medium tracking-wider hover:bg-foreground hover:text-background transition-all"
-          >
-            VIEW ALL PRODUCTS
-          </Button>
+          <Link to="/collections">
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="px-8 py-6 text-base font-medium tracking-wider hover:bg-foreground hover:text-background transition-all"
+            >
+              VIEW ALL PRODUCTS
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
