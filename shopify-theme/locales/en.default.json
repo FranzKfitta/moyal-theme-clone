@@ -1,0 +1,75 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "404": {
+      "title": "404 Page Not Found",
+      "subtext": "The page you were looking for does not exist.",
+      "link": "Continue shopping"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search",
+      "submit": "Submit"
+    }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "refresh_page": "You are being redirected to this page.",
+    "link_messages": {
+      "new_window": "Opens in a new window."
+    }
+  },
+  "sections": {
+    "header": {
+      "cart_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      }
+    },
+    "cart": {
+      "title": "Cart",
+      "cart_error": "There was an error while updating your cart. Please try again.",
+      "cart_quantity_error_html": "You can only add [quantity] of this item to your cart."
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Bag",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "value_unavailable": "{{ value }} is not available",
+      "quantity": "Quantity",
+      "size": "Size",
+      "details": "Details"
+    }
+  },
+  "collections": {
+    "all_products": "All Products",
+    "items_count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "sort": {
+      "title": "Sort",
+      "featured": "Featured",
+      "best_selling": "Best selling",
+      "a_z": "Alphabetically, A-Z",
+      "z_a": "Alphabetically, Z-A",
+      "price_low": "Price, low to high",
+      "price_high": "Price, high to low",
+      "date_old": "Date, old to new",
+      "date_new": "Date, new to old"
+    },
+    "filters": {
+      "title": "Filters",
+      "clear_all": "Clear All",
+      "product_type": "Product Type",
+      "color": "Color",
+      "size": "Size"
+    }
+  }
+}
+

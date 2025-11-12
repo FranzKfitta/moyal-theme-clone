@@ -1,0 +1,577 @@
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FALL WINTER 25"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_placeholders",
+      "label": "Use placeholder images",
+      "default": false,
+      "info": "Enable to use static placeholder images instead of actual products for testing"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Only used when placeholder mode is disabled"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "label": "Maximum products to show"
+    },
+    {
+      "type": "header",
+      "content": "Placeholder Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_1",
+      "label": "Placeholder Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_1_secondary",
+      "label": "Placeholder Image 1 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_1",
+      "label": "Product Name 1",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_1",
+      "label": "Product Price 1",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_2",
+      "label": "Placeholder Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_2_secondary",
+      "label": "Placeholder Image 2 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_2",
+      "label": "Product Name 2",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_2",
+      "label": "Product Price 2",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_3",
+      "label": "Placeholder Image 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_3_secondary",
+      "label": "Placeholder Image 3 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_3",
+      "label": "Product Name 3",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_3",
+      "label": "Product Price 3",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_4",
+      "label": "Placeholder Image 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_4_secondary",
+      "label": "Placeholder Image 4 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_4",
+      "label": "Product Name 4",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_4",
+      "label": "Product Price 4",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_5",
+      "label": "Placeholder Image 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_5_secondary",
+      "label": "Placeholder Image 5 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_5",
+      "label": "Product Name 5",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_5",
+      "label": "Product Price 5",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_6",
+      "label": "Placeholder Image 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_6_secondary",
+      "label": "Placeholder Image 6 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_6",
+      "label": "Product Name 6",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_6",
+      "label": "Product Price 6",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_7",
+      "label": "Placeholder Image 7"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_7_secondary",
+      "label": "Placeholder Image 7 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_7",
+      "label": "Product Name 7",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_7",
+      "label": "Product Price 7",
+      "default": "$99.00"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_8",
+      "label": "Placeholder Image 8"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image_8_secondary",
+      "label": "Placeholder Image 8 (Secondary/Hover)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name_8",
+      "label": "Product Name 8",
+      "default": "Product Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price_8",
+      "label": "Product Price 8",
+      "default": "$99.00"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}
+
+{%- liquid
+  assign use_placeholders = section.settings.use_placeholders
+  assign collection = collections[section.settings.collection] | default: collections.all
+  assign products_to_show = section.settings.products_to_show | default: 8
+  assign section_id = 'featured-collection-' | append: section.id
+  
+  if use_placeholders
+    assign placeholder_count = 0
+    if section.settings.placeholder_image_1 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_2 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_3 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_4 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_5 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_6 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_7 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+    if section.settings.placeholder_image_8 != blank
+      assign placeholder_count = placeholder_count | plus: 1
+    endif
+  endif
+-%}
+
+<section class="py-12 md:py-16" data-section-id="{{ section.id }}">
+  <div class="w-full">
+    {%- if section.settings.heading != blank -%}
+      <div class="mb-12 sm:mb-16 md:mb-20 pl-4 md:pl-6">
+        <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold">{{ section.settings.heading }}</h2>
+      </div>
+    {%- endif -%}
+
+    {%- if use_placeholders and placeholder_count > 0 -%}
+      {%- comment -%} Placeholder Mode {%- endcomment -%}
+      <div class="relative">
+        <div class="featured-collection-carousel overflow-hidden" id="{{ section_id }}-carousel">
+          <div class="flex gap-3 sm:gap-4 md:gap-6 transition-transform duration-500 ease-in-out pl-4 md:pl-6" id="{{ section_id }}-track" style="transform: translateX(0);">
+            {%- for i in (1..8) -%}
+              {%- assign image_key = 'placeholder_image_' | append: i -%}
+              {%- assign image_secondary_key = 'placeholder_image_' | append: i | append: '_secondary' -%}
+              {%- assign name_key = 'placeholder_name_' | append: i -%}
+              {%- assign price_key = 'placeholder_price_' | append: i -%}
+              {%- assign placeholder_image = section.settings[image_key] -%}
+              {%- assign placeholder_image_secondary = section.settings[image_secondary_key] -%}
+              {%- if placeholder_image != blank -%}
+                <div class="featured-product-card-wrapper flex-shrink-0">
+                  <div class="product-card group cursor-pointer flex-shrink-0 w-full">
+                    <div class="product-image-container relative overflow-hidden bg-secondary rounded-sm mb-4 transition-all duration-300 w-full">
+                      <div class="block absolute inset-0 z-0">
+                        <img
+                          src="{{ placeholder_image | image_url: width: 600 }}"
+                          alt="{{ section.settings[name_key] | escape | default: 'Placeholder Product' }}"
+                          class="product-image-primary absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
+                          loading="lazy"
+                          width="600"
+                          height="800"
+                        >
+                        {%- if placeholder_image_secondary != blank -%}
+                          <img
+                            src="{{ placeholder_image_secondary | image_url: width: 600 }}"
+                            alt="{{ section.settings[name_key] | escape | default: 'Placeholder Product' }}"
+                            class="product-image-secondary absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                            loading="lazy"
+                            width="600"
+                            height="800"
+                          >
+                        {%- endif -%}
+                      </div>
+                      {%- comment -%} Add to Cart Icon for placeholders (disabled - no real product) {%- endcomment -%}
+                      <button
+                        type="button"
+                        class="product-add-to-cart absolute right-4 bg-black shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/90"
+                        style="z-index: 40; bottom: 8px; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: not-allowed;"
+                        onclick="event.preventDefault(); event.stopPropagation(); alert('This is a placeholder product. Please use real products to add to cart.'); return false;"
+                        aria-label="Placeholder product - cannot add to cart"
+                        disabled
+                      >
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.25 10.5a.75.75 0 01-.75.75h-.375a.75.75 0 010-1.5H7.5a.75.75 0 01.75.75zm7.5 0a.75.75 0 01-.75.75h-.375a.75.75 0 010-1.5H15a.75.75 0 01.75.75z"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="text-center space-y-1">
+                      <h3 class="font-serif text-lg font-medium">{{ section.settings[name_key] | default: 'Product Name' }}</h3>
+                      <p class="text-muted-foreground font-medium">{{ section.settings[price_key] | default: '$99.00' }}</p>
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+        
+        {%- comment -%} Navigation Arrows {%- endcomment -%}
+        {%- if placeholder_count > 4 -%}
+          {%- comment -%} Left Arrow (Previous) {%- endcomment -%}
+          <button
+            type="button"
+            class="featured-collection-arrow featured-collection-arrow-left absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 opacity-0 pointer-events-none transition-opacity duration-300"
+            onclick="if (window.scrollFeaturedCollection) { window.scrollFeaturedCollection('{{ section_id }}', 'prev'); } return false;"
+            aria-label="Previous products"
+            id="{{ section_id }}-arrow-prev"
+          >
+            <svg class="w-8 h-8 md:w-10 md:h-10 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          
+          {%- comment -%} Right Arrow (Next) {%- endcomment -%}
+          <button
+            type="button"
+            class="featured-collection-arrow featured-collection-arrow-right absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 transition-opacity duration-300"
+            onclick="if (window.scrollFeaturedCollection) { window.scrollFeaturedCollection('{{ section_id }}', 'next'); } return false;"
+            aria-label="Next products"
+            id="{{ section_id }}-arrow-next"
+          >
+            <svg class="w-8 h-8 md:w-10 md:h-10 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        {%- endif -%}
+      </div>
+    {%- elsif collection.products_count > 0 -%}
+      {%- comment -%} Real Products Mode {%- endcomment -%}
+      <div class="relative">
+        <div class="featured-collection-carousel overflow-hidden" id="{{ section_id }}-carousel">
+          <div class="flex gap-3 sm:gap-4 md:gap-6 transition-transform duration-500 ease-in-out pl-4 md:pl-6" id="{{ section_id }}-track" style="transform: translateX(0);">
+            {%- for product in collection.products limit: products_to_show -%}
+              <div class="featured-product-card-wrapper flex-shrink-0">
+                {% render 'product-card', product: product %}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+        
+        {%- comment -%} Navigation Arrows {%- endcomment -%}
+        {%- assign total_products = collection.products_count | default: 0 -%}
+        {%- if total_products > 4 -%}
+          {%- comment -%} Left Arrow (Previous) {%- endcomment -%}
+          <button
+            type="button"
+            class="featured-collection-arrow featured-collection-arrow-left absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 opacity-0 pointer-events-none transition-opacity duration-300"
+            onclick="if (window.scrollFeaturedCollection) { window.scrollFeaturedCollection('{{ section_id }}', 'prev'); } return false;"
+            aria-label="Previous products"
+            id="{{ section_id }}-arrow-prev"
+          >
+            <svg class="w-8 h-8 md:w-10 md:h-10 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          
+          {%- comment -%} Right Arrow (Next) {%- endcomment -%}
+          <button
+            type="button"
+            class="featured-collection-arrow featured-collection-arrow-right absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 transition-opacity duration-300"
+            onclick="if (window.scrollFeaturedCollection) { window.scrollFeaturedCollection('{{ section_id }}', 'next'); } return false;"
+            aria-label="Next products"
+            id="{{ section_id }}-arrow-next"
+          >
+            <svg class="w-8 h-8 md:w-10 md:h-10 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <div class="text-center py-12 pl-4 md:pl-6">
+        <p class="text-muted-foreground">
+          {%- if use_placeholders -%}
+            Please add at least one placeholder image in the theme editor.
+          {%- else -%}
+            No products found in this collection.
+          {%- endif -%}
+        </p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+  (function() {
+    function scrollFeaturedCollection(sectionId, direction) {
+      const track = document.getElementById(sectionId + '-track');
+      if (!track) {
+        console.error('Track not found:', sectionId + '-track');
+        return;
+      }
+      
+      const carousel = track.parentElement;
+      if (!carousel) {
+        console.error('Carousel not found');
+        return;
+      }
+      
+      // Get the actual card width including padding
+      const firstCard = track.querySelector('.product-card')?.closest('div');
+      if (!firstCard) {
+        console.error('No cards found');
+        return;
+      }
+      
+      const cardWidth = firstCard.offsetWidth;
+      const gap = window.innerWidth >= 768 ? 24 : window.innerWidth >= 640 ? 16 : 12; // Responsive gap
+      const scrollAmount = cardWidth + gap;
+      const maxScroll = Math.max(0, track.scrollWidth - carousel.offsetWidth);
+      
+      const currentTransform = track.style.transform.match(/translateX\((-?\d+)px\)/);
+      const currentX = currentTransform ? parseInt(currentTransform[1]) : 0;
+      
+      let newX;
+      if (direction === 'next') {
+        newX = Math.max(currentX - scrollAmount, -maxScroll);
+      } else {
+        newX = Math.min(currentX + scrollAmount, 0);
+      }
+      
+      track.style.transform = `translateX(${newX}px)`;
+      
+      // Update arrow visibility
+      updateArrowVisibility(sectionId, newX, maxScroll);
+    }
+    
+    function updateArrowVisibility(sectionId, currentX, maxScroll) {
+      const prevArrow = document.getElementById(sectionId + '-arrow-prev');
+      const nextArrow = document.getElementById(sectionId + '-arrow-next');
+      
+      // Show/hide previous arrow (left)
+      if (prevArrow) {
+        if (currentX >= -10) {
+          // At the beginning
+          prevArrow.style.opacity = '0';
+          prevArrow.style.pointerEvents = 'none';
+        } else {
+          prevArrow.style.opacity = '1';
+          prevArrow.style.pointerEvents = 'auto';
+        }
+      }
+      
+      // Show/hide next arrow (right)
+      if (nextArrow) {
+        if (Math.abs(currentX) >= maxScroll - 10) {
+          // At the end
+          nextArrow.style.opacity = '0';
+          nextArrow.style.pointerEvents = 'none';
+        } else {
+          nextArrow.style.opacity = '1';
+          nextArrow.style.pointerEvents = 'auto';
+        }
+      }
+    }
+    
+    // Make function globally available
+    window.scrollFeaturedCollection = scrollFeaturedCollection;
+    
+    // Initialize arrow visibility on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('[data-section-id]');
+      sections.forEach(function(section) {
+        const sectionId = 'featured-collection-' + section.getAttribute('data-section-id');
+        const track = document.getElementById(sectionId + '-track');
+        if (track) {
+          const carousel = track.parentElement;
+          const maxScroll = Math.max(0, track.scrollWidth - carousel.offsetWidth);
+          updateArrowVisibility(sectionId, 0, maxScroll);
+        }
+      });
+    });
+    
+    // Re-initialize on theme editor changes
+    if (window.Shopify && window.Shopify.designMode) {
+      document.addEventListener('shopify:section:load', function(event) {
+        const section = event.detail.sectionId;
+        const sectionId = 'featured-collection-' + section;
+        const track = document.getElementById(sectionId + '-track');
+        if (track) {
+          const carousel = track.parentElement;
+          const maxScroll = Math.max(0, track.scrollWidth - carousel.offsetWidth);
+          updateArrowVisibility(sectionId, 0, maxScroll);
+        }
+      });
+    }
+  })();
+  
+  function addToCartQuick(variantId, event) {
+    if (!variantId || variantId === '') {
+      console.error('Variant ID is required');
+      return;
+    }
+    
+    event.preventDefault();
+    event.stopPropagation();
+    
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: 1
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to add to cart');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update cart count bubble
+      const cartBubble = document.getElementById('cart-count-bubble');
+      if (cartBubble) {
+        fetch('/cart.js')
+          .then(res => res.json())
+          .then(cart => {
+            if (cart.item_count > 0) {
+              cartBubble.textContent = cart.item_count;
+              cartBubble.style.display = 'flex';
+            }
+          });
+      }
+      
+      // Dispatch cart updated event
+      document.dispatchEvent(new CustomEvent('cart:updated'));
+      
+      // Optional: Show a brief success message
+      const button = event.target.closest('.product-add-to-cart');
+      if (button) {
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<svg class="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+        }, 1000);
+      }
+    })
+    .catch(error => {
+      console.error('Error adding to cart:', error);
+      alert('Unable to add product to cart. Please try again.');
+    });
+  }
+  
+  // Make functions globally available
+  window.scrollFeaturedCollection = scrollFeaturedCollection;
+  window.addToCartQuick = addToCartQuick;
+</script>

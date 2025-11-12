@@ -1,0 +1,111 @@
+{% comment %}
+  The collection template with filters
+{% endcomment %}
+
+<main class="container mx-auto px-4 py-8 md:py-12">
+  <h1 class="text-3xl md:text-4xl font-bold mb-8 uppercase tracking-wide">
+    {{ collection.title }}
+  </h1>
+
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Filters Sidebar -->
+    <aside class="lg:w-64 flex-shrink-0">
+      <div class="space-y-6">
+        <form id="collection-filters" class="space-y-6">
+          {%- if collection.filters.size > 0 -%}
+            {%- for filter in collection.filters -%}
+              <div class="collapsible-filter">
+                <button type="button" class="collapsible-trigger" data-filter-type="{{ filter.type }}">
+                  {{ filter.label }}
+                  <svg class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div class="collapsible-content" data-filter-type="{{ filter.type }}">
+                  {%- case filter.type -%}
+                    {%- when 'list' -%}
+                      {%- for filter_value in filter.values -%}
+                        <label class="flex items-center gap-2 cursor-pointer pt-4">
+                          <input
+                            type="checkbox"
+                            name="{{ filter_value.param_name }}"
+                            value="{{ filter_value.value }}"
+                            {% if filter_value.active %}checked{% endif %}
+                            class="checkbox"
+                            onchange="this.form.submit()"
+                          >
+                          <span class="text-sm">{{ filter_value.label }}</span>
+                        </label>
+                      {%- endfor -%}
+                    {%- when 'price_range' -%}
+                      <div class="pt-4 space-y-2">
+                        <input
+                          type="range"
+                          name="{{ filter.min_value.param_name }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                          value="{{ filter.min_value.value | money_without_currency | remove: ',' }}"
+                          class="w-full"
+                        >
+                        <input
+                          type="range"
+                          name="{{ filter.max_value.param_name }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                          value="{{ filter.max_value.value | money_without_currency | remove: ',' }}"
+                          class="w-full"
+                        >
+                      </div>
+                  {%- endcase -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+
+          {%- if collection.filters.size > 0 -%}
+            <a href="{{ collection.url }}" class="btn btn-outline w-full text-sm">
+              {{ 'collections.filters.clear_all' | t }}
+            </a>
+          {%- endif -%}
+        </form>
+      </div>
+    </aside>
+
+    <!-- Products Grid -->
+    <div class="flex-1">
+      <!-- Toolbar -->
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-border">
+        <span class="text-sm text-muted-foreground">
+          {{ collection.products_count }} {{ 'collections.items_count' | t: count: collection.products_count }}
+        </span>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium uppercase tracking-wider">{{ 'collections.sort.title' | t }}</span>
+          <select id="sort-by" class="select-trigger" onchange="this.form.submit()">
+            <option value="manual" {% if collection.sort_by == 'manual' %}selected{% endif %}>{{ 'collections.sort.featured' | t }}</option>
+            <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>{{ 'collections.sort.best_selling' | t }}</option>
+            <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>{{ 'collections.sort.a_z' | t }}</option>
+            <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>{{ 'collections.sort.z_a' | t }}</option>
+            <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>{{ 'collections.sort.price_low' | t }}</option>
+            <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>{{ 'collections.sort.price_high' | t }}</option>
+            <option value="created-ascending" {% if collection.sort_by == 'created-ascending' %}selected{% endif %}>{{ 'collections.sort.date_old' | t }}</option>
+            <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>{{ 'collections.sort.date_new' | t }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Products -->
+      {%- if collection.products_count > 0 -%}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+          {%- for product in collection.products -%}
+            {% render 'product-card', product: product %}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="text-center py-12">
+          <p class="text-muted-foreground">No products found in this collection.</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</main>
+

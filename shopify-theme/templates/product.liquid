@@ -1,0 +1,104 @@
+{% comment %}
+  The product template
+{% endcomment %}
+
+<main class="container mx-auto px-4 py-8 md:py-16">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto">
+    <!-- Product Images -->
+    <div class="space-y-4">
+      {%- if product.images.size > 0 -%}
+        {%- for image in product.images -%}
+          <div class="aspect-[3/4] overflow-hidden">
+            <img
+              src="{{ image | image_url: width: 800 }}"
+              alt="{{ image.alt | escape }}"
+              class="w-full h-full object-cover"
+              loading="lazy"
+              width="{{ image.width }}"
+              height="{{ image.height }}"
+            >
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="aspect-[3/4] overflow-hidden bg-secondary">
+          {{ 'product-1.jpg' | asset_url | image_tag: loading: 'lazy', class: 'w-full h-full object-cover' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Product Info -->
+    <div class="md:sticky md:top-24 md:h-fit">
+      <h1 class="font-serif text-3xl md:text-4xl mb-4">{{ product.title }}</h1>
+      <p class="text-2xl mb-8">
+        {{ product.price | money }}
+        {%- if product.compare_at_price > product.price -%}
+          <span class="line-through text-muted-foreground ml-2">{{ product.compare_at_price | money }}</span>
+        {%- endif -%}
+      </p>
+      
+      {%- if product.description != blank -%}
+        <p class="text-muted-foreground mb-8 leading-relaxed">
+          {{ product.description }}
+        </p>
+      {%- endif -%}
+
+      <div class="border-t border-border mb-8"></div>
+
+      <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" id="product-form">
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" id="product-variant-id">
+
+        <!-- Variant Selection -->
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <div class="mb-8">
+              <p class="font-medium mb-4">{{ option.name }}</p>
+              <div class="flex gap-2 flex-wrap">
+                {%- for value in option.values -%}
+                  <button
+                    type="button"
+                    class="variant-option w-12 h-12 border transition-colors {% if option.selected_value == value %}border-foreground bg-foreground text-background{% else %}border-border hover:border-foreground{% endif %}"
+                    data-option-name="{{ option.name }}"
+                    data-option-value="{{ value }}"
+                  >
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        <!-- Quantity -->
+        <div class="mb-8">
+          <p class="font-medium mb-4">{{ 'products.product.quantity' | t }}</p>
+          <div class="flex items-center gap-4">
+            <button type="button" class="quantity-decrease w-10 h-10 border border-border hover:border-foreground transition-colors flex items-center justify-center">-</button>
+            <input type="number" name="quantity" value="1" min="1" class="quantity-input w-12 text-center border-0" id="quantity">
+            <button type="button" class="quantity-increase w-10 h-10 border border-border hover:border-foreground transition-colors flex items-center justify-center">+</button>
+          </div>
+        </div>
+
+        <!-- Add to Bag -->
+        <button type="submit" class="btn btn-default w-full mb-8 h-12" id="add-to-cart-button">
+          {{ 'products.product.add_to_cart' | t }}
+        </button>
+      </form>
+
+      <div class="border-t border-border mb-8"></div>
+
+      <!-- Product Details -->
+      {%- if product.metafields.custom.product_details != blank -%}
+        <div>
+          <p class="font-medium mb-4">{{ 'products.product.details' | t }}</p>
+          <ul class="space-y-2 text-sm text-muted-foreground">
+            {%- assign details = product.metafields.custom.product_details | split: ',' -%}
+            {%- for detail in details -%}
+              <li>• {{ detail | strip }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</main>
+

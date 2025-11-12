@@ -1,0 +1,170 @@
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media Type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "video_url",
+      "id": "hero_video",
+      "label": "Hero Video",
+      "accept": ["youtube", "vimeo"],
+      "info": "Enter a YouTube or Vimeo video URL"
+    },
+    {
+      "type": "video",
+      "id": "hero_video_file",
+      "label": "Hero Video File",
+      "info": "Upload a video file (MP4 recommended)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "ELEGANT"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "DISCOVER MORE"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="relative h-screen overflow-hidden">
+  <div class="absolute inset-0">
+    {%- if section.settings.media_type == 'video' -%}
+      {%- if section.settings.hero_video != blank -%}
+        {%- comment -%} YouTube or Vimeo video {%- endcomment -%}
+        {%- if section.settings.hero_video contains 'youtube.com' or section.settings.hero_video contains 'youtu.be' -%}
+          {%- assign video_id = section.settings.hero_video | split: 'v=' | last | split: '&' | first -%}
+          {%- if section.settings.hero_video contains 'youtu.be' -%}
+            {%- assign video_id = section.settings.hero_video | split: 'youtu.be/' | last | split: '?' | first -%}
+          {%- endif -%}
+          <iframe
+            src="https://www.youtube.com/embed/{{ video_id }}?autoplay=1&mute=1&loop=1&playlist={{ video_id }}&controls=0&showinfo=0&rel=0&modestbranding=1"
+            class="w-full h-full object-cover"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            loading="eager"
+          ></iframe>
+        {%- elsif section.settings.hero_video contains 'vimeo.com' -%}
+          {%- assign video_id = section.settings.hero_video | split: 'vimeo.com/' | last | split: '/' | first | split: '?' | first -%}
+          <iframe
+            src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&loop=1&background=1"
+            class="w-full h-full object-cover"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen
+            loading="eager"
+          ></iframe>
+        {%- endif -%}
+      {%- elsif section.settings.hero_video_file != blank -%}
+        {%- comment -%} Uploaded video file {%- endcomment -%}
+        <video
+          autoplay
+          muted
+          loop
+          playsinline
+          class="w-full h-full object-cover"
+        >
+          {%- for source in section.settings.hero_video_file.sources -%}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {%- endfor -%}
+          Your browser does not support the video tag.
+        </video>
+      {%- elsif section.settings.hero_image != blank -%}
+        {%- comment -%} Fallback to image if no video is provided {%- endcomment -%}
+        <img
+          src="{{ section.settings.hero_image | image_url: width: 1920 }}"
+          alt="{{ section.settings.heading }}"
+          class="w-full h-full object-cover"
+          loading="eager"
+          width="{{ section.settings.hero_image.width }}"
+          height="{{ section.settings.hero_image.height }}"
+        >
+      {%- else -%}
+        <img
+          src="{{ 'hero-image.jpg' | asset_url }}"
+          alt="{{ section.settings.heading }}"
+          class="w-full h-full object-cover"
+          loading="eager"
+        >
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%} Image fallback {%- endcomment -%}
+      {%- if section.settings.hero_image != blank -%}
+        <img
+          src="{{ section.settings.hero_image | image_url: width: 1920 }}"
+          alt="{{ section.settings.heading }}"
+          class="w-full h-full object-cover"
+          loading="eager"
+          width="{{ section.settings.hero_image.width }}"
+          height="{{ section.settings.hero_image.height }}"
+        >
+      {%- else -%}
+        <img
+          src="{{ 'hero-image.jpg' | asset_url }}"
+          alt="{{ section.settings.heading }}"
+          class="w-full h-full object-cover"
+          loading="eager"
+        >
+      {%- endif -%}
+    {%- endif -%}
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-black/20"></div>
+  </div>
+
+  <div class="relative h-full flex flex-col items-center justify-center text-center px-4">
+    <div class="max-w-4xl mx-auto space-y-8">
+      <h2 class="font-serif text-7xl md:text-8xl lg:text-9xl font-bold text-softPink drop-shadow-lg leading-tight">
+        {{ section.settings.heading }}
+      </h2>
+      <p class="font-script text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-lg font-semibold">
+        {{ section.settings.subheading }}
+      </p>
+      <div class="w-32 h-0.5 bg-white mx-auto"></div>
+      <a href="{{ section.settings.button_link | default: routes.collections_url }}" class="btn btn-lg bg-white text-foreground hover:bg-white/90 px-8 py-6 text-base font-medium tracking-wider transition-all hover:scale-105 shadow-elegant inline-block">
+        {{ section.settings.button_text }}
+      </a>
+    </div>
+  </div>
+</section>
+

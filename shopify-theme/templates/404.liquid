@@ -1,0 +1,14 @@
+{% comment %}
+  The 404 template
+{% endcomment %}
+
+<div class="flex min-h-screen items-center justify-center bg-muted">
+  <div class="text-center">
+    <h1 class="mb-4 text-4xl font-bold">404</h1>
+    <p class="mb-4 text-xl text-muted-foreground">{{ 'general.404.subtext' | t }}</p>
+    <a href="{{ routes.root_url }}" class="text-primary underline hover:text-primary/90">
+      {{ 'general.404.link' | t }}
+    </a>
+  </div>
+</div>
+

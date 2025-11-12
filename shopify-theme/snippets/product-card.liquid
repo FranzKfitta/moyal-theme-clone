@@ -1,0 +1,76 @@
+{%- liquid
+  assign product = product | default: card_product
+  if product == blank
+    assign product = collections.all.products.first
+  endif
+  
+  assign first_image = product.featured_image
+  assign second_image = product.images[1] | default: product.featured_image
+  assign is_sold_out = false
+  if product.available == false
+    assign is_sold_out = true
+  endif
+-%}
+
+<div class="product-card group cursor-pointer flex-shrink-0 w-full">
+  <div class="product-image-container relative overflow-hidden bg-secondary rounded-sm mb-4 transition-all duration-300 w-full">
+    <div class="block absolute inset-0 z-0">
+      {%- if first_image != blank -%}
+        <img
+          src="{{ first_image | image_url: width: 600 }}"
+          alt="{{ first_image.alt | escape | default: product.title }}"
+          class="product-image-primary absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
+          loading="lazy"
+        >
+        {%- if second_image != blank and second_image != first_image -%}
+          <img
+            src="{{ second_image | image_url: width: 600 }}"
+            alt="{{ second_image.alt | escape | default: product.title }}"
+            class="product-image-secondary absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            loading="lazy"
+          >
+        {%- endif -%}
+      {%- else -%}
+        <div class="absolute inset-0 w-full h-full bg-secondary flex items-center justify-center">
+          <span class="text-muted-foreground">No image</span>
+        </div>
+      {%- endif -%}
+    </div>
+    <a href="{{ product.url }}" class="block absolute inset-0" style="z-index: 2;"></a>
+    
+    {%- comment -%} Sold Out Badge {%- endcomment -%}
+    {%- if is_sold_out -%}
+      <div class="absolute right-4 px-4 py-2 text-xs font-medium uppercase tracking-wider text-white whitespace-nowrap rounded" style="z-index: 40; background-color: #e68d06; width: auto; height: auto; top: 8px;">
+        Sold Out
+      </div>
+    {%- endif -%}
+    
+    {%- comment -%} Add to Cart Icon (shows on hover) {%- endcomment -%}
+    {%- unless is_sold_out -%}
+      <button
+        type="button"
+        class="product-add-to-cart absolute right-4 bg-black shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/90"
+        style="z-index: 40; bottom: 8px; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 12px;"
+        onclick="if (window.addToCartQuick) { window.addToCartQuick('{{ product.selected_or_first_available_variant.id }}', event); } return false;"
+        aria-label="Add {{ product.title }} to cart"
+        data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      >
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.25 10.5a.75.75 0 01-.75.75h-.375a.75.75 0 010-1.5H7.5a.75.75 0 01.75.75zm7.5 0a.75.75 0 01-.75.75h-.375a.75.75 0 010-1.5H15a.75.75 0 01.75.75z"></path>
+        </svg>
+      </button>
+    {%- endunless -%}
+  </div>
+
+  <a href="{{ product.url }}" class="block">
+    <div class="text-center space-y-1">
+      <h3 class="font-serif text-lg font-medium">{{ product.title }}</h3>
+      <p class="text-muted-foreground font-medium">
+        {{ product.price | money }}
+        {%- if product.compare_at_price > product.price -%}
+          <span class="line-through text-muted-foreground ml-2">{{ product.compare_at_price | money }}</span>
+        {%- endif -%}
+      </p>
+    </div>
+  </a>
+</div>

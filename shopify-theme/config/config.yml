@@ -1,0 +1,32 @@
+name: The Pure
+version: 1.0.0
+settings:
+  type:
+    base_font:
+      family: Inter
+      weight: 400
+    heading_font:
+      family: Playfair Display
+      weight: 700
+  color_schemes:
+    default:
+      name: Default
+      settings:
+        background: '#F5F0E8'
+        foreground: '#1A1816'
+        primary: '#1A1816'
+        secondary: '#E0D8D0'
+        accent: '#E8B8C8'
+        muted: '#E0D8D0'
+        muted_foreground: '#6B6B6B'
+        border: '#D9D1C8'
+        input: '#D9D1C8'
+        ring: '#1A1816'
+        card: '#FFFFFF'
+        card_foreground: '#1A1816'
+        popover: '#FFFFFF'
+        popover_foreground: '#1A1816'
+        destructive: '#EF4444'
+        destructive_foreground: '#F5F0E8'
+        radius: 0.25rem
+

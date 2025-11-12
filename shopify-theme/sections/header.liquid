@@ -1,0 +1,324 @@
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text",
+      "default": "The Pure"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Enable sticky header",
+      "default": true,
+      "info": "Header will stay at the top when scrolling"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_scroll",
+      "label": "Enable transparency on scroll",
+      "default": true,
+      "info": "Header becomes more transparent when scrolling"
+    }
+  ]
+}
+{% endschema %}
+
+<header id="main-header" class="{% if section.settings.sticky_header %}sticky{% endif %} top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border transition-all duration-300" data-sticky="{{ section.settings.sticky_header }}" data-transparent-scroll="{{ section.settings.transparent_on_scroll }}">
+  <div class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex-1">
+        <a href="{{ routes.root_url }}" class="font-script text-4xl font-bold tracking-wider cursor-pointer hover:opacity-80 transition-opacity">
+          {{ section.settings.logo_text | default: settings.logo_text | default: 'The Pure' }}
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button type="button" id="mobile-menu-toggle" class="lg:hidden btn btn-ghost btn-icon h-10 w-10" aria-label="Toggle menu" aria-expanded="false">
+        <svg id="menu-icon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="close-icon" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center gap-8 flex-1 justify-center">
+        {%- assign menu_handle = section.settings.menu -%}
+        {%- if menu_handle != blank and linklists[menu_handle] != blank and linklists[menu_handle].links.size > 0 -%}
+          {%- for link in linklists[menu_handle].links -%}
+            <div class="nav-item relative group">
+              <a href="{{ link.url }}" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">
+                {{ link.title | upcase }}
+              </a>
+              {%- if link.links.size > 0 -%}
+                <div class="nav-dropdown opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div class="bg-background border-t border-border py-12">
+                    <div class="container mx-auto px-4">
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {%- for child_link in link.links -%}
+                          <a href="{{ child_link.url }}" class="block py-2 text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">
+                            {{ child_link.title }}
+                          </a>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- elsif linklists['main-menu'] != blank and linklists['main-menu'].links.size > 0 -%}
+          {%- for link in linklists['main-menu'].links -%}
+            <div class="nav-item relative group">
+              <a href="{{ link.url }}" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">
+                {{ link.title | upcase }}
+              </a>
+              {%- if link.links.size > 0 -%}
+                <div class="nav-dropdown opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div class="bg-background border-t border-border py-12">
+                    <div class="container mx-auto px-4">
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {%- for child_link in link.links -%}
+                          <a href="{{ child_link.url }}" class="block py-2 text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">
+                            {{ child_link.title }}
+                          </a>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Fallback menu items if no menu is configured {%- endcomment -%}
+          <a href="{{ routes.root_url }}" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">NEWS</a>
+          <a href="{{ routes.collections_url }}" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">SHOP</a>
+          <a href="{{ routes.collections_url }}" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">ARCHIVES SALES</a>
+          <a href="{{ routes.root_url }}/pages/lookbooks" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">LOOKBOOKS</a>
+          <a href="{{ routes.root_url }}/pages/about" class="text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">ABOUT</a>
+        {%- endif -%}
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2 flex-1 justify-end">
+        <button type="button" class="btn btn-ghost btn-icon h-10 w-10" aria-label="Search">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+        <a href="{{ routes.account_login_url }}" class="btn btn-ghost btn-icon h-10 w-10" aria-label="Account">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </a>
+        <button type="button" class="btn btn-ghost btn-icon h-10 w-10 relative" id="cart-icon-bubble" aria-label="Cart">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span class="cart-count-bubble" id="cart-count-bubble" style="display: {% if cart.item_count > 0 %}flex{% else %}none{% endif %};">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <nav id="mobile-menu" class="lg:hidden hidden border-t border-border bg-background">
+      <div class="container mx-auto px-4 py-4">
+        {%- assign menu_handle = section.settings.menu -%}
+        {%- if menu_handle != blank and linklists[menu_handle] != blank and linklists[menu_handle].links.size > 0 -%}
+          <ul class="space-y-1">
+            {%- for link in linklists[menu_handle].links -%}
+              <li>
+                <a href="{{ link.url }}" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">
+                  {{ link.title | upcase }}
+                </a>
+                {%- if link.links.size > 0 -%}
+                  <ul class="pl-4 space-y-1">
+                    {%- for child_link in link.links -%}
+                      <li>
+                        <a href="{{ child_link.url }}" class="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                          {{ child_link.title }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- elsif linklists['main-menu'] != blank and linklists['main-menu'].links.size > 0 -%}
+          <ul class="space-y-1">
+            {%- for link in linklists['main-menu'].links -%}
+              <li>
+                <a href="{{ link.url }}" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">
+                  {{ link.title | upcase }}
+                </a>
+                {%- if link.links.size > 0 -%}
+                  <ul class="pl-4 space-y-1">
+                    {%- for child_link in link.links -%}
+                      <li>
+                        <a href="{{ child_link.url }}" class="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                          {{ child_link.title }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- else -%}
+          <ul class="space-y-1">
+            <li><a href="{{ routes.root_url }}" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">NEWS</a></li>
+            <li><a href="{{ routes.collections_url }}" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">SHOP</a></li>
+            <li><a href="{{ routes.collections_url }}" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">ARCHIVES SALES</a></li>
+            <li><a href="{{ routes.root_url }}/pages/lookbooks" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">LOOKBOOKS</a></li>
+            <li><a href="{{ routes.root_url }}/pages/about" class="block px-4 py-3 text-sm font-medium tracking-wide hover:bg-secondary hover:text-foreground transition-colors">ABOUT</a></li>
+          </ul>
+        {%- endif -%}
+      </div>
+    </nav>
+  </div>
+</header>
+
+{%- render 'cart-drawer' -%}
+
+<script>
+  (function() {
+    const header = document.getElementById('main-header');
+    if (!header) return;
+    
+    const isSticky = header.getAttribute('data-sticky') === 'true';
+    const transparentOnScroll = header.getAttribute('data-transparent-scroll') === 'true';
+    
+    // Fix all parent containers that might prevent sticky
+    function fixParentContainers(element) {
+      let parent = element.parentElement;
+      while (parent && parent !== document.body) {
+        // Remove overflow that prevents sticky
+        const computedStyle = window.getComputedStyle(parent);
+        if (computedStyle.overflow !== 'visible' || 
+            computedStyle.overflowX !== 'visible' || 
+            computedStyle.overflowY !== 'visible') {
+          parent.style.overflow = 'visible';
+          parent.style.overflowX = 'visible';
+          parent.style.overflowY = 'visible';
+        }
+        // Ensure position doesn't interfere
+        if (computedStyle.position === 'relative' && parent.tagName !== 'BODY') {
+          parent.style.position = 'static';
+        }
+        parent = parent.parentElement;
+      }
+    }
+    
+    // Force sticky positioning if enabled
+    if (isSticky) {
+      // Fix parent containers first
+      fixParentContainers(header);
+      
+      // Apply sticky with inline styles (highest priority)
+      header.style.setProperty('position', 'sticky', 'important');
+      header.style.setProperty('top', '0', 'important');
+      header.style.setProperty('z-index', '50', 'important');
+      header.style.setProperty('left', '0', 'important');
+      header.style.setProperty('right', '0', 'important');
+      header.style.setProperty('width', '100%', 'important');
+      
+      // Also add class for CSS targeting
+      header.classList.add('sticky');
+      
+      // Double-check after a short delay to ensure it stuck
+      setTimeout(function() {
+        const computed = window.getComputedStyle(header);
+        if (computed.position !== 'sticky') {
+          console.warn('Sticky positioning failed, computed position:', computed.position);
+          // Try fixing parents again
+          fixParentContainers(header);
+        }
+      }, 100);
+    }
+    
+    // Only add scroll transparency if enabled
+    if (!transparentOnScroll) return;
+    
+    let lastScroll = 0;
+    const scrollThreshold = 50; // Start transparency after scrolling 50px
+    
+    function handleScroll() {
+      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (currentScroll > scrollThreshold) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+      
+      lastScroll = currentScroll;
+    }
+    
+    // Use throttling for better performance
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+    
+    // Check initial scroll position
+    handleScroll();
+  })();
+
+  // Mobile menu toggle
+  (function() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    if (!menuToggle || !mobileMenu) return;
+    
+    menuToggle.addEventListener('click', function() {
+      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      
+      if (isExpanded) {
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      } else {
+        mobileMenu.classList.remove('hidden');
+        menuIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        menuToggle.setAttribute('aria-expanded', 'true');
+      }
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!mobileMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+        if (!mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          menuIcon.classList.remove('hidden');
+          closeIcon.classList.add('hidden');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+  })();
+</script>
