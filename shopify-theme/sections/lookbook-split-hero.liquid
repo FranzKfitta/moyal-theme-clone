@@ -1,0 +1,76 @@
+{% comment %}
+  Lookbook Split Hero Section
+  Displays two large images side by side (50/50 split)
+{% endcomment %}
+
+<div class="lookbook-split-hero">
+  <div class="lookbook-split-hero__container">
+    {%- if section.settings.image_left != blank -%}
+      <div class="lookbook-split-hero__image-wrapper">
+        <img
+          src="{{ section.settings.image_left | image_url: width: 2000 }}"
+          srcset="{{ section.settings.image_left | image_url: width: 1000 }} 1000w,
+                  {{ section.settings.image_left | image_url: width: 1500 }} 1500w,
+                  {{ section.settings.image_left | image_url: width: 2000 }} 2000w"
+          sizes="50vw"
+          alt="{{ section.settings.image_left.alt | default: 'Lookbook image' | escape }}"
+          class="lookbook-split-hero__image"
+          loading="eager"
+          width="{{ section.settings.image_left.width }}"
+          height="{{ section.settings.image_left.height }}"
+        >
+      </div>
+    {%- else -%}
+      <div class="lookbook-split-hero__image-wrapper lookbook-split-hero__placeholder">
+        {{ 'image' | placeholder_svg_tag: 'lookbook-split-hero__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.image_right != blank -%}
+      <div class="lookbook-split-hero__image-wrapper">
+        <img
+          src="{{ section.settings.image_right | image_url: width: 2000 }}"
+          srcset="{{ section.settings.image_right | image_url: width: 1000 }} 1000w,
+                  {{ section.settings.image_right | image_url: width: 1500 }} 1500w,
+                  {{ section.settings.image_right | image_url: width: 2000 }} 2000w"
+          sizes="50vw"
+          alt="{{ section.settings.image_right.alt | default: 'Lookbook image' | escape }}"
+          class="lookbook-split-hero__image"
+          loading="eager"
+          width="{{ section.settings.image_right.width }}"
+          height="{{ section.settings.image_right.height }}"
+        >
+      </div>
+    {%- else -%}
+      <div class="lookbook-split-hero__image-wrapper lookbook-split-hero__placeholder">
+        {{ 'image' | placeholder_svg_tag: 'lookbook-split-hero__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Lookbook Split Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_left",
+      "label": "Left Image",
+      "info": "Recommended size: 2000x3000px (2:3 aspect ratio)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_right",
+      "label": "Right Image",
+      "info": "Recommended size: 2000x3000px (2:3 aspect ratio)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook Split Hero"
+    }
+  ]
+}
+{% endschema %}
+

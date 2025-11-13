@@ -1,0 +1,87 @@
+{% comment %}
+  Lookbook Gallery Section
+  Displays a configurable number of vertical portrait images in a grid
+{% endcomment %}
+
+<section class="lookbook-gallery">
+  <div class="lookbook-gallery__container">
+    <div class="lookbook-gallery__grid">
+      {%- for block in section.blocks -%}
+        <div class="lookbook-gallery__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="lookbook-gallery__image-wrapper">
+              <img
+                src="{{ block.settings.image | image_url: width: 1200 }}"
+                srcset="{{ block.settings.image | image_url: width: 600 }} 600w,
+                        {{ block.settings.image | image_url: width: 900 }} 900w,
+                        {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                alt="{{ block.settings.image.alt | default: 'Lookbook image' | escape }}"
+                class="lookbook-gallery__image"
+                loading="lazy"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+              >
+            </div>
+          {%- else -%}
+            <div class="lookbook-gallery__image-wrapper lookbook-gallery__placeholder">
+              {{ 'image' | placeholder_svg_tag: 'lookbook-gallery__placeholder-svg' }}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lookbook Gallery",
+  "settings": [
+    {
+      "type": "range",
+      "id": "image_count",
+      "label": "Number of Images",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 4,
+      "info": "Use the blocks below to add images. The number of blocks determines how many images are displayed."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gallery_image",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Recommended size: 1200x1800px (2:3 aspect ratio, vertical portrait)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook Gallery",
+      "blocks": [
+        {
+          "type": "gallery_image"
+        },
+        {
+          "type": "gallery_image"
+        },
+        {
+          "type": "gallery_image"
+        },
+        {
+          "type": "gallery_image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
