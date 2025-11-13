@@ -87,16 +87,15 @@
     // Update cart total
     if (cartTotal) {
       const currency = cart.currency?.iso_code || 'USD';
-      cartTotal.textContent = `${formatMoney(cart.total_price)} ${currency}`;
+      cartTotal.textContent = `${formatMoney(cart.total_price, currency)} ${currency}`;
     }
 
     if (cart.item_count === 0) {
       cartDrawerItems.innerHTML = `
         <div class="px-6 py-12 text-center">
-          <h3 class="text-xl font-bold text-black mb-4">YOUR CART IS EMPTY</h3>
-          <p class="text-sm text-gray-600 mb-1">Have an account?</p>
-          <p class="text-sm text-gray-600 mb-6">to check out faster.</p>
-          <a href="${window.routes.all_products_collection_url || '/collections/all'}" class="cart-btn-primary inline-block bg-black text-white text-center py-3 px-6 font-medium">
+          <h3 class="text-xl font-bold text-foreground mb-4">YOUR CART IS EMPTY</h3>
+          <p class="text-sm text-muted-foreground mb-6">Continue shopping to add items</p>
+          <a href="${window.routes.all_products_collection_url || '/collections/all'}" class="cart-btn-default inline-block h-11">
             Continue shopping
           </a>
         </div>
@@ -107,23 +106,31 @@
     let html = '';
     cart.items.forEach(item => {
       html += `
-        <div class="flex gap-4 px-6 py-5 border-b border-gray-200" data-cart-item-key="${item.key}">
+        <div class="flex gap-4 px-6 py-5 border-b border-border" data-cart-item-key="${item.key}">
           <div class="w-20 h-20 flex-shrink-0 overflow-hidden">
             <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" style="max-width: 80px; max-height: 80px; width: 100%; height: 100%;">
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="font-normal text-sm mb-1 text-black leading-tight">${item.product_title}</h3>
-            ${item.variant_title !== 'Default Title' ? `<p class="text-xs text-gray-600 mb-2">${item.variant_title}</p>` : ''}
-            <p class="font-medium text-sm mb-3 text-black">${formatMoney(item.line_price)}</p>
+            <h3 class="font-normal text-sm mb-1 text-foreground leading-tight">${item.product_title}</h3>
+            ${item.variant_title !== 'Default Title' ? `<p class="text-xs text-muted-foreground mb-2">${item.variant_title}</p>` : ''}
+            <p class="font-medium text-sm mb-3 text-foreground">${formatMoney(item.line_price, cart.currency?.iso_code)}</p>
             <div class="flex items-center gap-2">
-              <button type="button" class="cart-item-decrease cart-btn-quantity w-6 h-6 flex items-center justify-center border border-gray-300 bg-white text-black text-sm" data-item-key="${item.key}" data-variant-id="${item.variant_id}">-</button>
-              <span class="cart-item-quantity text-sm font-medium min-w-[20px] text-center text-black">${item.quantity}</span>
-              <button type="button" class="cart-item-increase cart-btn-quantity w-6 h-6 flex items-center justify-center border border-gray-300 bg-white text-black text-sm" data-item-key="${item.key}" data-variant-id="${item.variant_id}">+</button>
+              <button type="button" class="cart-item-decrease cart-btn-outline-icon h-8 w-8" data-item-key="${item.key}" data-variant-id="${item.variant_id}" aria-label="Decrease quantity">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                </svg>
+              </button>
+              <span class="text-sm font-medium min-w-[32px] text-center text-foreground">${item.quantity}</span>
+              <button type="button" class="cart-item-increase cart-btn-outline-icon h-8 w-8" data-item-key="${item.key}" data-variant-id="${item.variant_id}" aria-label="Increase quantity">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
             </div>
           </div>
-          <button type="button" class="cart-item-remove cart-btn-remove text-gray-600 flex-shrink-0 self-start mt-1" data-item-key="${item.key}" data-variant-id="${item.variant_id}" aria-label="Remove item">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          <button type="button" class="cart-item-remove cart-btn-ghost h-10 w-10 text-muted-foreground flex-shrink-0 self-start mt-1" data-item-key="${item.key}" data-variant-id="${item.variant_id}" aria-label="Remove item">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
             </svg>
           </button>
         </div>
@@ -135,10 +142,11 @@
   }
 
   // Format Money
-  function formatMoney(cents) {
+  function formatMoney(cents, currencyCode) {
+    const currency = currencyCode || window.Shopify?.currency?.active || 'USD';
     return new Intl.NumberFormat(document.documentElement.lang || 'en', {
       style: 'currency',
-      currency: window.Shopify?.currency?.active || 'USD'
+      currency: currency
     }).format(cents / 100);
   }
 
