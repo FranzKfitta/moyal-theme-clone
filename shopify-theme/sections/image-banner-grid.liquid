@@ -73,18 +73,31 @@
 }
 {% endschema %}
 
-<section class="w-full" style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
-  <div class="container">
-    <div class="flex flex-col md:flex-row gap-4">
-      <!-- Block 1 -->
-      <div class="flex-1 relative group overflow-hidden cursor-pointer">
-        <a href="{{ section.settings.link_1 | default: '#' }}" class="block w-full h-full">
-          <div class="relative aspect-[3/4] md:aspect-[4/5] overflow-hidden">
+{%- liquid
+  assign padding_top = section.settings.padding_top | default: 40
+  assign padding_bottom = section.settings.padding_bottom | default: 40
+-%}
+
+<section class="w-full" style="padding-top: {{ padding_top }}px; padding-bottom: {{ padding_bottom }}px;" data-section-id="{{ section.id }}">
+  <div class="flex flex-col md:flex-row gap-4 px-4 md:px-6">
+    <!-- Block 1 -->
+    {%- if section.settings.image_1 != blank or section.settings.heading_1 != blank -%}
+      <div class="flex-1 relative">
+        {%- if section.settings.link_1 != blank -%}
+          <a href="{{ section.settings.link_1 }}" class="block w-full">
+        {%- else -%}
+          <div class="block w-full">
+        {%- endif -%}
+          <div class="relative w-full overflow-hidden" style="aspect-ratio: 0.6666666666666666;">
             {%- if section.settings.image_1 != blank -%}
               <img
-                src="{{ section.settings.image_1 | image_url: width: 800 }}"
-                alt="{{ section.settings.heading_1 }}"
-                class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                src="{{ section.settings.image_1 | image_url: width: 1200 }}"
+                srcset="{{ section.settings.image_1 | image_url: width: 600 }} 600w,
+                        {{ section.settings.image_1 | image_url: width: 900 }} 900w,
+                        {{ section.settings.image_1 | image_url: width: 1200 }} 1200w"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                alt="{{ section.settings.heading_1 | escape }}"
+                class="w-full h-full object-cover"
                 loading="lazy"
                 width="{{ section.settings.image_1.width }}"
                 height="{{ section.settings.image_1.height }}"
@@ -95,28 +108,41 @@
               </div>
             {%- endif -%}
             
-            <!-- Overlay for better text visibility -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
             <!-- Heading -->
-            <div class="absolute bottom-8 left-8 right-8 text-white">
-              <h3 class="font-serif text-2xl md:text-3xl font-light leading-tight drop-shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 opacity-90 group-hover:opacity-100">
-                {{ section.settings.heading_1 }}
-              </h3>
-            </div>
+            {%- if section.settings.heading_1 != blank -%}
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <h2 class="text-2xl font-light text-black image-banner-heading">
+                  {{ section.settings.heading_1 }}
+                </h2>
+              </div>
+            {%- endif -%}
           </div>
-        </a>
+        {%- if section.settings.link_1 != blank -%}
+          </a>
+        {%- else -%}
+          </div>
+        {%- endif -%}
       </div>
+    {%- endif -%}
 
-      <!-- Block 2 -->
-      <div class="flex-1 relative group overflow-hidden cursor-pointer">
-        <a href="{{ section.settings.link_2 | default: '#' }}" class="block w-full h-full">
-          <div class="relative aspect-[3/4] md:aspect-[4/5] overflow-hidden">
+    <!-- Block 2 -->
+    {%- if section.settings.image_2 != blank or section.settings.heading_2 != blank -%}
+      <div class="flex-1 relative">
+        {%- if section.settings.link_2 != blank -%}
+          <a href="{{ section.settings.link_2 }}" class="block w-full">
+        {%- else -%}
+          <div class="block w-full">
+        {%- endif -%}
+          <div class="relative w-full overflow-hidden" style="aspect-ratio: 0.6629392971246006;">
             {%- if section.settings.image_2 != blank -%}
               <img
-                src="{{ section.settings.image_2 | image_url: width: 800 }}"
-                alt="{{ section.settings.heading_2 }}"
-                class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                src="{{ section.settings.image_2 | image_url: width: 1200 }}"
+                srcset="{{ section.settings.image_2 | image_url: width: 600 }} 600w,
+                        {{ section.settings.image_2 | image_url: width: 900 }} 900w,
+                        {{ section.settings.image_2 | image_url: width: 1200 }} 1200w"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                alt="{{ section.settings.heading_2 | escape }}"
+                class="w-full h-full object-cover"
                 loading="lazy"
                 width="{{ section.settings.image_2.width }}"
                 height="{{ section.settings.image_2.height }}"
@@ -127,18 +153,21 @@
               </div>
             {%- endif -%}
             
-            <!-- Overlay for better text visibility -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
             <!-- Heading -->
-            <div class="absolute bottom-8 left-8 right-8 text-white">
-              <h3 class="font-serif text-2xl md:text-3xl font-light leading-tight drop-shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 opacity-90 group-hover:opacity-100">
-                {{ section.settings.heading_2 }}
-              </h3>
-            </div>
+            {%- if section.settings.heading_2 != blank -%}
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <h2 class="text-2xl font-light text-black image-banner-heading">
+                  {{ section.settings.heading_2 }}
+                </h2>
+              </div>
+            {%- endif -%}
           </div>
-        </a>
+        {%- if section.settings.link_2 != blank -%}
+          </a>
+        {%- else -%}
+          </div>
+        {%- endif -%}
       </div>
-    </div>
+    {%- endif -%}
   </div>
 </section>
