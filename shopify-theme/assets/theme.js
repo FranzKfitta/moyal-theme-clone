@@ -96,7 +96,7 @@
           <h3 class="text-xl font-bold text-black mb-4">YOUR CART IS EMPTY</h3>
           <p class="text-sm text-gray-600 mb-1">Have an account?</p>
           <p class="text-sm text-gray-600 mb-6">to check out faster.</p>
-          <a href="${window.routes.all_products_collection_url || '/collections/all'}" class="inline-block bg-black text-white text-center py-3 px-6 font-medium hover:opacity-90 transition-opacity">
+          <a href="${window.routes.all_products_collection_url || '/collections/all'}" class="cart-btn-primary inline-block bg-black text-white text-center py-3 px-6 font-medium">
             Continue shopping
           </a>
         </div>
@@ -116,12 +116,12 @@
             ${item.variant_title !== 'Default Title' ? `<p class="text-xs text-gray-600 mb-2">${item.variant_title}</p>` : ''}
             <p class="font-medium text-sm mb-3 text-black">${formatMoney(item.line_price)}</p>
             <div class="flex items-center gap-2">
-              <button type="button" class="cart-item-decrease w-6 h-6 flex items-center justify-center border border-gray-300 bg-white text-black hover:bg-gray-100 transition-colors text-sm" data-item-key="${item.key}" data-variant-id="${item.variant_id}">-</button>
+              <button type="button" class="cart-item-decrease cart-btn-quantity w-6 h-6 flex items-center justify-center border border-gray-300 bg-white text-black text-sm" data-item-key="${item.key}" data-variant-id="${item.variant_id}">-</button>
               <span class="cart-item-quantity text-sm font-medium min-w-[20px] text-center text-black">${item.quantity}</span>
-              <button type="button" class="cart-item-increase w-6 h-6 flex items-center justify-center border border-gray-300 bg-white text-black hover:bg-gray-100 transition-colors text-sm" data-item-key="${item.key}" data-variant-id="${item.variant_id}">+</button>
+              <button type="button" class="cart-item-increase cart-btn-quantity w-6 h-6 flex items-center justify-center border border-gray-300 bg-white text-black text-sm" data-item-key="${item.key}" data-variant-id="${item.variant_id}">+</button>
             </div>
           </div>
-          <button type="button" class="cart-item-remove text-gray-600 hover:text-black transition-colors flex-shrink-0 self-start mt-1" data-item-key="${item.key}" data-variant-id="${item.variant_id}" aria-label="Remove item">
+          <button type="button" class="cart-item-remove cart-btn-remove text-gray-600 flex-shrink-0 self-start mt-1" data-item-key="${item.key}" data-variant-id="${item.variant_id}" aria-label="Remove item">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -322,12 +322,12 @@
       if (isHidden) {
         discountForm.classList.remove('hidden');
         if (discountIcon) {
-          discountIcon.style.transform = 'rotate(45deg)';
+          discountIcon.classList.add('rotated');
         }
       } else {
         discountForm.classList.add('hidden');
         if (discountIcon) {
-          discountIcon.style.transform = 'rotate(0deg)';
+          discountIcon.classList.remove('rotated');
         }
       }
     });
