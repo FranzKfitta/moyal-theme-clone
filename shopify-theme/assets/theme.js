@@ -318,6 +318,73 @@
     });
   });
 
+  // Filter Dropdowns (Horizontal)
+  const filterTriggers = document.querySelectorAll('.filter-trigger-horizontal');
+  filterTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const filterGroup = this.closest('.filter-group-horizontal');
+      const isOpen = filterGroup.getAttribute('data-open') === 'true';
+      
+      // Close all other filter dropdowns
+      document.querySelectorAll('.filter-group-horizontal').forEach(group => {
+        if (group !== filterGroup) {
+          group.setAttribute('data-open', 'false');
+        }
+      });
+      
+      // Toggle current dropdown
+      filterGroup.setAttribute('data-open', isOpen ? 'false' : 'true');
+    });
+  });
+
+  // Close filter dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.filter-group-horizontal')) {
+      document.querySelectorAll('.filter-group-horizontal').forEach(group => {
+        group.setAttribute('data-open', 'false');
+      });
+    }
+  });
+
+  // Product Image Carousel
+  const productCards = document.querySelectorAll('.collection-product-card');
+  productCards.forEach(card => {
+    const prevButton = card.querySelector('.product-carousel-prev');
+    const nextButton = card.querySelector('.product-carousel-next');
+    const images = card.querySelectorAll('.product-image');
+    
+    if (prevButton && nextButton && images.length > 1) {
+      let currentIndex = 0;
+
+      function showImage(index) {
+        images.forEach((img, i) => {
+          if (i === index) {
+            img.classList.add('product-image-active');
+            img.classList.remove('product-image-hidden');
+          } else {
+            img.classList.remove('product-image-active');
+            img.classList.add('product-image-hidden');
+          }
+        });
+      }
+
+      prevButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+      });
+
+      nextButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      });
+    }
+  });
+
   // Collection Sort
   const sortSelect = document.getElementById('sort-by');
   if (sortSelect) {

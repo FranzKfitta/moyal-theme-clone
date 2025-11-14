@@ -1,0 +1,56 @@
+{% comment %}
+  Collection Header Section
+{% endcomment %}
+
+<div class="collection-header">
+  <h1 class="collection-title">
+    {{ collection.title }}
+  </h1>
+  {%- if section.settings.show_description and collection.description != blank -%}
+    <div class="collection-description">
+      {{ collection.description }}
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+  .collection-header {
+    width: 100%;
+    padding: 2rem 1.5rem 0.5rem;
+  }
+
+  .collection-title {
+    font-size: 2rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--foreground));
+    margin: 0;
+  }
+
+  .collection-description {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    max-width: 800px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection Header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Header"
+    }
+  ]
+}
+{% endschema %}

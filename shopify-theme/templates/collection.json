@@ -1,0 +1,47 @@
+{
+  "sections": {
+    "collection-header": {
+      "type": "collection-header"
+    },
+    "collection-filters": {
+      "type": "collection-filters",
+      "blocks": {
+        "availability-filter": {
+          "type": "list_filter",
+          "settings": {
+            "filter_source": "availability"
+          }
+        },
+        "price-filter": {
+          "type": "price_filter",
+          "settings": {
+            "enable_price_filter": true
+          }
+        },
+        "type-filter": {
+          "type": "list_filter",
+          "settings": {
+            "filter_source": "product_type"
+          }
+        }
+      },
+      "block_order": [
+        "availability-filter",
+        "price-filter",
+        "type-filter"
+      ],
+      "settings": {
+        "show_clear_button": true,
+        "clear_button_text": "Clear all"
+      }
+    },
+    "collection-products": {
+      "type": "collection-products"
+    }
+  },
+  "order": [
+    "collection-header",
+    "collection-filters",
+    "collection-products"
+  ]
+}
