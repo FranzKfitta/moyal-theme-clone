@@ -13,76 +13,192 @@
       "id": "description",
       "label": "Description",
       "default": "Timeless elegance and refined luxury for the modern woman."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_label",
+          "label": "Menu Label",
+          "default": "Shop",
+          "info": "The title that appears above the menu links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu_links",
+          "label": "Menu Links",
+          "info": "Select a menu to display links"
+        }
+      ]
     },
     {
-      "type": "link_list",
-      "id": "shop_menu",
-      "label": "Shop Menu"
-    },
+      "type": "social",
+      "name": "Social Link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "social_platform",
+          "label": "Social Platform",
+          "options": [
+            {
+              "value": "instagram",
+              "label": "Instagram"
+            },
+            {
+              "value": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "value": "twitter",
+              "label": "Twitter / X"
+            },
+            {
+              "value": "tiktok",
+              "label": "TikTok"
+            },
+            {
+              "value": "pinterest",
+              "label": "Pinterest"
+            },
+            {
+              "value": "youtube",
+              "label": "YouTube"
+            },
+            {
+              "value": "linkedin",
+              "label": "LinkedIn"
+            },
+            {
+              "value": "snapchat",
+              "label": "Snapchat"
+            },
+            {
+              "value": "whatsapp",
+              "label": "WhatsApp"
+            },
+            {
+              "value": "telegram",
+              "label": "Telegram"
+            },
+            {
+              "value": "discord",
+              "label": "Discord"
+            },
+            {
+              "value": "twitch",
+              "label": "Twitch"
+            },
+            {
+              "value": "vimeo",
+              "label": "Vimeo"
+            },
+            {
+              "value": "spotify",
+              "label": "Spotify"
+            },
+            {
+              "value": "apple_music",
+              "label": "Apple Music"
+            },
+            {
+              "value": "soundcloud",
+              "label": "SoundCloud"
+            }
+          ],
+          "default": "instagram",
+          "info": "Select the social media platform"
+        },
+        {
+          "type": "url",
+          "id": "social_url",
+          "label": "Social Media URL",
+          "info": "Enter the full URL to your social media profile"
+        }
+      ]
+    }
+  ],
+  "presets": [
     {
-      "type": "link_list",
-      "id": "customer_care_menu",
-      "label": "Customer Care Menu"
-    },
-    {
-      "type": "url",
-      "id": "instagram_link",
-      "label": "Instagram URL"
-    },
-    {
-      "type": "url",
-      "id": "facebook_link",
-      "label": "Facebook URL"
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "menu",
+          "settings": {
+            "menu_label": "Shop"
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "menu_label": "Customer Care"
+          }
+        },
+        {
+          "type": "social",
+          "settings": {
+            "social_platform": "instagram"
+          }
+        },
+        {
+          "type": "social",
+          "settings": {
+            "social_platform": "facebook"
+          }
+        }
+      ]
     }
   ]
 }
 {% endschema %}
 
+{%- comment -%} Calculate total columns: 1 (brand) + menu blocks count + 1 (newsletter) {%- endcomment -%}
+{%- assign menu_blocks_count = 0 -%}
+{%- for block in section.blocks -%}
+  {%- if block.type == 'menu' -%}
+    {%- assign menu_blocks_count = menu_blocks_count | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign total_columns = menu_blocks_count | plus: 2 -%}
+
 <footer class="bg-secondary border-t border-border">
   <div class="container mx-auto px-4 py-16">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <div class="footer-grid" style="--footer-columns: {{ total_columns }};">
       <!-- Brand -->
-      <div>
+      <div class="footer-brand">
         <h3 class="font-script text-3xl font-bold mb-4">{{ section.settings.brand_text | default: settings.footer_brand_text | default: 'The Pure' }}</h3>
         <p class="text-muted-foreground text-sm leading-relaxed">
           {{ section.settings.description | default: settings.footer_description | default: 'Timeless elegance and refined luxury for the modern woman.' }}
         </p>
       </div>
 
-      <!-- Quick Links -->
-      {%- if section.settings.shop_menu != blank -%}
-        <div>
-          <h4 class="font-serif text-lg font-semibold mb-4">Shop</h4>
-          <ul class="space-y-2 text-sm">
-            {%- for link in linklists[section.settings.shop_menu].links -%}
-              <li>
-                <a href="{{ link.url }}" class="text-muted-foreground hover:text-foreground transition-colors">
-                  {{ link.title }}
-                </a>
-              </li>
-            {%- endfor -%}
-          </ul>
-        </div>
-      {%- endif -%}
-
-      <!-- Customer Care -->
-      {%- if section.settings.customer_care_menu != blank -%}
-        <div>
-          <h4 class="font-serif text-lg font-semibold mb-4">Customer Care</h4>
-          <ul class="space-y-2 text-sm">
-            {%- for link in linklists[section.settings.customer_care_menu].links -%}
-              <li>
-                <a href="{{ link.url }}" class="text-muted-foreground hover:text-foreground transition-colors">
-                  {{ link.title }}
-                </a>
-              </li>
-            {%- endfor -%}
-          </ul>
-        </div>
-      {%- endif -%}
+      <!-- Dynamic Menu Blocks -->
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'menu' -%}
+          <div class="footer-menu" {{ block.shopify_attributes }}>
+            <h4 class="font-serif text-lg font-semibold mb-4">{{ block.settings.menu_label | default: 'Menu' }}</h4>
+            {%- if block.settings.menu_links != blank -%}
+              <ul class="space-y-2 text-sm">
+                {%- for link in linklists[block.settings.menu_links].links -%}
+                  <li>
+                    <a href="{{ link.url }}" class="text-muted-foreground hover:text-foreground transition-colors">
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- else -%}
+              <p class="text-muted-foreground text-sm italic">No menu selected. Please choose a menu in the theme editor.</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
 
       <!-- Newsletter -->
-      <div>
+      <div class="footer-newsletter">
         <h4 class="font-serif text-lg font-semibold mb-4">Newsletter</h4>
         <p class="text-muted-foreground text-sm mb-4">
           Subscribe to receive exclusive updates and offers.
@@ -102,20 +218,20 @@
           </button>
         </form>
         <div class="flex gap-3">
-          {%- if section.settings.instagram_link != blank -%}
-            <a href="{{ section.settings.instagram_link }}" class="btn btn-ghost btn-icon h-9 w-9" aria-label="Instagram">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-          {%- endif -%}
-          {%- if section.settings.facebook_link != blank -%}
-            <a href="{{ section.settings.facebook_link }}" class="btn btn-ghost btn-icon h-9 w-9" aria-label="Facebook">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-            </a>
-          {%- endif -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'social' and block.settings.social_url != blank -%}
+              <a 
+                href="{{ block.settings.social_url }}" 
+                class="btn btn-ghost btn-icon h-9 w-9" 
+                aria-label="{{ block.settings.social_platform | capitalize }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                {{ block.shopify_attributes }}
+              >
+                {% render 'social-icon', platform: block.settings.social_platform, class: 'h-4 w-4', aria_label: block.settings.social_platform %}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
         </div>
       </div>
     </div>
@@ -128,3 +244,45 @@
   </div>
 </footer>
 
+<style>
+  /* Footer Grid - Responsive layout */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  /* Tablet: 2 columns */
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Desktop: Dynamic columns based on CSS variable */
+  @media (min-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: repeat(var(--footer-columns, 4), 1fr);
+    }
+  }
+
+  /* Large screens: Limit max columns for better readability */
+  @media (min-width: 1280px) {
+    .footer-grid {
+      max-width: 100%;
+    }
+    
+    /* If more than 6 columns, wrap to multiple rows or limit */
+    .footer-grid[style*="--footer-columns: 7"],
+    .footer-grid[style*="--footer-columns: 8"],
+    .footer-grid[style*="--footer-columns: 9"] {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  /* Ensure brand and newsletter sections don't get too wide */
+  .footer-brand,
+  .footer-newsletter {
+    min-width: 0; /* Prevent overflow */
+  }
+</style>

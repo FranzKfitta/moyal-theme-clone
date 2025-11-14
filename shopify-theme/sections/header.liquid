@@ -3,10 +3,45 @@
   "name": "Header",
   "settings": [
     {
+      "type": "select",
+      "id": "logo_type",
+      "label": "Logo Type",
+      "options": [
+        {
+          "value": "text",
+          "label": "Text Logo"
+        },
+        {
+          "value": "image",
+          "label": "Image Logo"
+        }
+      ],
+      "default": "text",
+      "info": "Choose whether to display a text logo or an image logo"
+    },
+    {
       "type": "text",
       "id": "logo_text",
       "label": "Logo Text",
-      "default": "The Pure"
+      "default": "The Pure",
+      "info": "Only used when Logo Type is set to 'Text Logo'"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image",
+      "info": "Only used when Logo Type is set to 'Image Logo'. Recommended size: 200x60px"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "label": "Logo Max Width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 200,
+      "info": "Maximum width for the logo image"
     },
     {
       "type": "link_list",
@@ -37,8 +72,24 @@
     <div class="flex items-center justify-between">
       <!-- Logo -->
       <div class="flex-1">
-        <a href="{{ routes.root_url }}" class="font-script text-4xl font-bold tracking-wider cursor-pointer hover:opacity-80 transition-opacity">
-          {{ section.settings.logo_text | default: settings.logo_text | default: 'The Pure' }}
+        <a href="{{ routes.root_url }}" class="cursor-pointer hover:opacity-80 transition-opacity inline-block">
+          {%- if section.settings.logo_type == 'image' and section.settings.logo_image != blank -%}
+            <img 
+              src="{{ section.settings.logo_image | image_url: width: 400 }}"
+              srcset="{{ section.settings.logo_image | image_url: width: 200 }} 200w,
+                      {{ section.settings.logo_image | image_url: width: 400 }} 400w,
+                      {{ section.settings.logo_image | image_url: width: 600 }} 600w"
+              sizes="(max-width: 768px) 150px, {{ section.settings.logo_max_width }}px"
+              alt="{{ section.settings.logo_text | default: shop.name }}"
+              class="logo-image"
+              style="max-width: {{ section.settings.logo_max_width }}px; height: auto;"
+              loading="eager"
+            />
+          {%- else -%}
+            <span class="font-script text-4xl font-bold tracking-wider">
+              {{ section.settings.logo_text | default: settings.logo_text | default: 'The Pure' }}
+            </span>
+          {%- endif -%}
         </a>
       </div>
 

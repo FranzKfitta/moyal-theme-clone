@@ -1122,6 +1122,19 @@ header#main-header.scrolled {
   background-color: hsl(var(--background) / 0.85) !important;
 }
 
+/* Logo Image Styling */
+header#main-header .logo-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+
+header#main-header a:hover .logo-image {
+  opacity: 0.8;
+}
+
 @supports (backdrop-filter: blur(8px)) {
   header#main-header.scrolled {
     background-color: hsl(var(--background) / 0.7) !important;
