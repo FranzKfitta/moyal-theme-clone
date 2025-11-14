@@ -104,7 +104,7 @@
       </button>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-8 flex-1 justify-center">
+      <nav class="hidden lg:flex items-center gap-6 flex-1 justify-center">
         {%- assign menu_handle = section.settings.menu -%}
         {%- if menu_handle != blank and linklists[menu_handle] != blank and linklists[menu_handle].links.size > 0 -%}
           {%- for link in linklists[menu_handle].links -%}
@@ -119,7 +119,7 @@
                       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {%- for child_link in link.links -%}
                           <a href="{{ child_link.url }}" class="block py-2 text-sm font-medium tracking-wide hover:text-muted-foreground transition-colors">
-                            {{ child_link.title }}
+                            {{ child_link.title | upcase }}
                           </a>
                         {%- endfor -%}
                       </div>
@@ -199,7 +199,7 @@
                     {%- for child_link in link.links -%}
                       <li>
                         <a href="{{ child_link.url }}" class="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                          {{ child_link.title }}
+                          {{ child_link.title | upcase }}
                         </a>
                       </li>
                     {%- endfor -%}
@@ -274,31 +274,13 @@
       }
     }
     
-    // Force sticky positioning if enabled
+    // Enable sticky behavior via CSS when setting is on
     if (isSticky) {
       // Fix parent containers first
       fixParentContainers(header);
-      
-      // Apply sticky with inline styles (highest priority)
-      header.style.setProperty('position', 'sticky', 'important');
-      header.style.setProperty('top', '0', 'important');
-      header.style.setProperty('z-index', '50', 'important');
-      header.style.setProperty('left', '0', 'important');
-      header.style.setProperty('right', '0', 'important');
-      header.style.setProperty('width', '100%', 'important');
-      
-      // Also add class for CSS targeting
+
+      // Add class so CSS can apply fixed positioning and top anchoring
       header.classList.add('sticky');
-      
-      // Double-check after a short delay to ensure it stuck
-      setTimeout(function() {
-        const computed = window.getComputedStyle(header);
-        if (computed.position !== 'sticky') {
-          console.warn('Sticky positioning failed, computed position:', computed.position);
-          // Try fixing parents again
-          fixParentContainers(header);
-        }
-      }, 100);
     }
     
     // Only add scroll transparency if enabled
