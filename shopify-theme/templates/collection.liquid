@@ -96,17 +96,38 @@
         {{ collection.products_count }} {{ collection.products_count | pluralize: 'item', 'items' }}
       </span>
       <div class="collection-sort">
-        <form method="get" action="{{ collection.url }}" class="sort-form">
-          <select name="sort_by" id="sort-by" class="sort-select" onchange="this.form.submit()">
-            <option value="manual" {% if collection.sort_by == 'manual' %}selected{% endif %}>Featured</option>
-            <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>Best selling</option>
-            <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>Alphabetically, A-Z</option>
-            <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>Alphabetically, Z-A</option>
-            <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Price, low to high</option>
-            <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>Price, high to low</option>
-            <option value="created-ascending" {% if collection.sort_by == 'created-ascending' %}selected{% endif %}>Date, old to new</option>
-            <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Date, new to old</option>
-          </select>
+        <form method="get" action="{{ collection.url }}" class="sort-form" id="sort-form">
+          <input type="hidden" name="sort_by" id="sort-by" value="{{ collection.sort_by | default: 'manual' }}">
+          <div class="sort-group-horizontal">
+            <button type="button" class="sort-trigger-horizontal">
+              <span class="sort-selected-text">
+                {%- case collection.sort_by -%}
+                  {%- when 'manual' -%}Featured
+                  {%- when 'best-selling' -%}Best selling
+                  {%- when 'title-ascending' -%}Alphabetically, A-Z
+                  {%- when 'title-descending' -%}Alphabetically, Z-A
+                  {%- when 'price-ascending' -%}Price, low to high
+                  {%- when 'price-descending' -%}Price, high to low
+                  {%- when 'created-ascending' -%}Date, old to new
+                  {%- when 'created-descending' -%}Date, new to old
+                  {%- else -%}Featured
+                {%- endcase -%}
+              </span>
+              <svg class="sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="sort-dropdown">
+              <button type="button" class="sort-option {% if collection.sort_by == 'manual' or collection.sort_by == blank %}sort-option-active{% endif %}" data-value="manual">Featured</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'best-selling' %}sort-option-active{% endif %}" data-value="best-selling">Best selling</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'title-ascending' %}sort-option-active{% endif %}" data-value="title-ascending">Alphabetically, A-Z</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'title-descending' %}sort-option-active{% endif %}" data-value="title-descending">Alphabetically, Z-A</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'price-ascending' %}sort-option-active{% endif %}" data-value="price-ascending">Price, low to high</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'price-descending' %}sort-option-active{% endif %}" data-value="price-descending">Price, high to low</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'created-ascending' %}sort-option-active{% endif %}" data-value="created-ascending">Date, old to new</button>
+              <button type="button" class="sort-option {% if collection.sort_by == 'created-descending' %}sort-option-active{% endif %}" data-value="created-descending">Date, new to old</button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -350,32 +371,81 @@
     align-items: center;
   }
 
-  .sort-select {
-    padding: 0.5rem 1.5rem 0.5rem 0;
+  .sort-group-horizontal {
+    position: relative;
+  }
+
+  .sort-trigger-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
     font-size: 0.875rem;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: transparent;
-    border: none;
-    border-radius: 0;
     color: hsl(var(--foreground));
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0 center;
-    background-size: 0.875rem;
     transition: color 0.2s ease;
+    white-space: nowrap;
   }
 
-  .sort-select:hover {
+  .sort-trigger-horizontal:hover {
     color: hsl(var(--muted-foreground));
   }
 
-  .sort-select:focus {
-    outline: none;
+  .sort-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    transition: transform 0.2s ease;
+  }
+
+  .sort-group-horizontal[data-open="true"] .sort-icon {
+    transform: rotate(180deg);
+  }
+
+  .sort-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    min-width: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .sort-group-horizontal[data-open="true"] .sort-dropdown {
+    display: block;
+  }
+
+  .sort-option {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 400;
     color: hsl(var(--foreground));
+    transition: color 0.2s ease;
+  }
+
+  .sort-option:hover {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .sort-option-active {
+    font-weight: 500;
   }
 
   /* Products Grid - Bigger images like featured collection */
@@ -635,6 +705,63 @@
         });
       }
     });
+  })();
+
+  // Sort dropdown toggle functionality
+  (function() {
+    const sortTrigger = document.querySelector('.sort-trigger-horizontal');
+    const sortGroup = document.querySelector('.sort-group-horizontal');
+    const sortOptions = document.querySelectorAll('.sort-option');
+    const sortForm = document.getElementById('sort-form');
+    const sortInput = document.getElementById('sort-by');
+    const sortSelectedText = document.querySelector('.sort-selected-text');
+    
+    if (sortTrigger && sortGroup) {
+      sortTrigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = sortGroup.getAttribute('data-open') === 'true';
+        
+        // Close all filters
+        document.querySelectorAll('.filter-group-horizontal').forEach(group => {
+          group.setAttribute('data-open', 'false');
+        });
+        
+        // Toggle sort dropdown
+        sortGroup.setAttribute('data-open', isOpen ? 'false' : 'true');
+      });
+      
+      // Handle sort option selection
+      sortOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const value = this.getAttribute('data-value');
+          const text = this.textContent.trim();
+          
+          // Update hidden input
+          sortInput.value = value;
+          
+          // Update displayed text
+          sortSelectedText.textContent = text;
+          
+          // Update active state
+          sortOptions.forEach(opt => opt.classList.remove('sort-option-active'));
+          this.classList.add('sort-option-active');
+          
+          // Close dropdown
+          sortGroup.setAttribute('data-open', 'false');
+          
+          // Submit form
+          sortForm.submit();
+        });
+      });
+      
+      // Close sort dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.sort-group-horizontal')) {
+          sortGroup.setAttribute('data-open', 'false');
+        }
+      });
+    }
   })();
 
   // Product Image Carousel
